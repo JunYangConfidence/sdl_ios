@@ -571,7 +571,7 @@ typedef void(^SDLVideoCapabilityResponseHandler)(SDLVideoStreamingCapability *_N
     }
 
     SDLLogD(@"Received Register App Interface");
-    SDLRegisterAppInterfaceResponse* registerResponse = (SDLRegisterAppInterfaceResponse*)notification.response;
+    SDLRegisterAppInterfaceResponse *registerResponse = (SDLRegisterAppInterfaceResponse*)notification.response;
 
     SDLLogV(@"Determining whether streaming is supported");
 #pragma clang diagnostic push
@@ -589,7 +589,7 @@ typedef void(^SDLVideoCapabilityResponseHandler)(SDLVideoStreamingCapability *_N
     }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated"
-    SDLImageResolution* resolution = registerResponse.displayCapabilities.screenParams.resolution;
+    SDLImageResolution *resolution = registerResponse.displayCapabilities.screenParams.resolution;
 #pragma clang diagnostic pop
     if (resolution != nil) {
         self.videoScaleManager.displayViewportResolution = CGSizeMake(resolution.resolutionWidth.floatValue,
