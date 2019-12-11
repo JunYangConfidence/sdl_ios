@@ -130,12 +130,8 @@ NS_ASSUME_NONNULL_BEGIN
     // We let ourselves know that the lockscreen will present, because we have to pause streaming video for that 0.3 seconds or else it will be very janky.
     [[NSNotificationCenter defaultCenter] postNotificationName:SDLLockScreenManagerWillPresentLockScreenViewController object:nil];
 
-    CGRect firstFrame = appWindow.frame;
-    firstFrame.origin.x = CGRectGetWidth(firstFrame);
-    appWindow.frame = firstFrame;
-
     // We then move the lockWindow to the original appWindow location.
-    self.lockWindow.frame = appWindow.bounds;
+    self.lockWindow.frame = UIScreen.mainScreen.bounds;
     [self.screenshotViewController loadScreenshotOfWindow:appWindow];
     [self.lockWindow makeKeyAndVisible];
 
@@ -229,12 +225,6 @@ NS_ASSUME_NONNULL_BEGIN
     SDLLogD(@"Dismiss lock screen window from app window: %@", appWindow);
     __weak typeof(self) weakself = self;
     [self.lockViewController dismissViewControllerAnimated:YES completion:^{
-        CGRect lockFrame = self.lockWindow.frame;
-        lockFrame.origin.x = CGRectGetWidth(lockFrame);
-        weakself.lockWindow.frame = lockFrame;
-
-        // Make the `appWindow` the visible window
-        appWindow.frame = self.lockWindow.bounds;
         [appWindow makeKeyAndVisible];
 
         // Destroy the lock screen window
