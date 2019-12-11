@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic, nullable) SDLScreenshotViewController *screenshotViewController;
 @property (strong, nonatomic, nullable) UIWindow *lockWindow;
+@property (strong, nonatomic, nullable) UIViewController *coveredRootViewController;
 
 @end
 
@@ -94,10 +95,11 @@ NS_ASSUME_NONNULL_BEGIN
             }
         }
 
+		// Find the currently visible app window
         NSArray<UIWindow *> *windows = appWindowScene.windows;
         UIWindow *appWindow = nil;
         for (UIWindow *window in windows) {
-            if (window != self.lockWindow) {
+            if (window.isKeyWindow) {
                 SDLLogV(@"Found app window");
                 appWindow = window;
                 break;
@@ -129,6 +131,9 @@ NS_ASSUME_NONNULL_BEGIN
 
     // We let ourselves know that the lockscreen will present, because we have to pause streaming video for that 0.3 seconds or else it will be very janky.
     [[NSNotificationCenter defaultCenter] postNotificationName:SDLLockScreenManagerWillPresentLockScreenViewController object:nil];
+
+	// Save the currently visible root view controller so we can find it when dismissing the lock screen window. It is not possible to present/dismiss a view in a window that is not visible so we don't have to worry about the `rootViewController` changing.
+	self.coveredRootViewController = appWindow.rootViewController;
 
     // We then move the lockWindow to the original appWindow location.
     self.lockWindow.frame = UIScreen.mainScreen.bounds;
@@ -196,8 +201,9 @@ NS_ASSUME_NONNULL_BEGIN
         UIWindow *appWindow = nil;
         for (UIWindow *window in windows) {
             SDLLogV(@"Checking window: %@", window);
-            if (window != self.lockWindow) {
+            if ([window.rootViewController isKindOfClass:[self.coveredRootViewController class]]) {
                 appWindow = window;
+				self.coveredRootViewController = nil;
                 break;
             }
         }
