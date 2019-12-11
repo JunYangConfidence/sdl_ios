@@ -17,34 +17,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SDLLockScreenPresenter ()
 
-@property (strong, nonatomic) SDLScreenshotViewController *screenshotViewController;
-@property (strong, nonatomic) UIWindow *lockWindow;
+@property (strong, nonatomic, nullable) SDLScreenshotViewController *screenshotViewController;
+@property (strong, nonatomic, nullable) UIWindow *lockWindow;
 
 @end
 
 
 @implementation SDLLockScreenPresenter
 
-#pragma mark - Lifecycle
-
-- (instancetype)init {
-    self = [super init];
-    if (!self) { return nil; }
-
-    CGRect screenFrame = [[UIScreen mainScreen] bounds];
-    _lockWindow = [[UIWindow alloc] initWithFrame:screenFrame];
-    _lockWindow.backgroundColor = [UIColor clearColor];
-    _screenshotViewController = [[SDLScreenshotViewController alloc] init];
-    _lockWindow.rootViewController = _screenshotViewController;
-
-    return self;
-}
-
 #pragma mark - Present Lock Window
 
 - (void)present {
     SDLLogD(@"Trying to present lock screen");
+
+    __weak typeof(self) weakself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
+        if(!weakself.lockWindow) {
+            CGRect screenFrame = [[UIScreen mainScreen] bounds];
+            weakself.lockWindow = [[UIWindow alloc] initWithFrame:screenFrame];
+            weakself.lockWindow.backgroundColor = [UIColor clearColor];
+        }
+
+        weakself.screenshotViewController = [[SDLScreenshotViewController alloc] init];
+        weakself.lockWindow.rootViewController = weakself.screenshotViewController;
+
         if (@available(iOS 13.0, *)) {
             [self sdl_presentIOS13];
         } else {
@@ -59,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
 
-    NSArray* windows = [[UIApplication sharedApplication] windows];
+    NSArray *windows = [[UIApplication sharedApplication] windows];
     UIWindow *appWindow = nil;
     for (UIWindow *window in windows) {
         if (window != self.lockWindow) {
@@ -165,7 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)sdl_dismissIOS12 {
-    NSArray* windows = [[UIApplication sharedApplication] windows];
+    NSArray *windows = [[UIApplication sharedApplication] windows];
     UIWindow *appWindow = nil;
     for (UIWindow *window in windows) {
         SDLLogV(@"Checking window: %@", window);
@@ -231,14 +227,20 @@ NS_ASSUME_NONNULL_BEGIN
 
     // Dismiss the lockscreen
     SDLLogD(@"Dismiss lock screen window from app window: %@", appWindow);
+    __weak typeof(self) weakself = self;
     [self.lockViewController dismissViewControllerAnimated:YES completion:^{
         CGRect lockFrame = self.lockWindow.frame;
         lockFrame.origin.x = CGRectGetWidth(lockFrame);
-        self.lockWindow.frame = lockFrame;
+        weakself.lockWindow.frame = lockFrame;
 
-        // Quickly move the map back, and make it the key window.
+        // Make the `appWindow` the visible window
         appWindow.frame = self.lockWindow.bounds;
         [appWindow makeKeyAndVisible];
+
+        // Destroy the lock screen window
+        weakself.screenshotViewController = nil;
+        weakself.lockWindow.rootViewController = nil;
+        weakself.lockWindow = nil;
 
         // Tell ourselves we are done.
         [[NSNotificationCenter defaultCenter] postNotificationName:SDLLockScreenManagerDidDismissLockScreenViewController object:nil];
