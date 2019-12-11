@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray *windows = [[UIApplication sharedApplication] windows];
     UIWindow *appWindow = nil;
     for (UIWindow *window in windows) {
-        if (window != self.lockWindow) {
+        if (window.isKeyWindow) {
             appWindow = window;
             break;
         }
@@ -166,7 +166,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIWindow *appWindow = nil;
     for (UIWindow *window in windows) {
         SDLLogV(@"Checking window: %@", window);
-        if (window != self.lockWindow) {
+        if ([window.rootViewController isKindOfClass:[self.coveredRootViewController class]]) {
             appWindow = window;
             break;
         }
@@ -203,7 +203,6 @@ NS_ASSUME_NONNULL_BEGIN
             SDLLogV(@"Checking window: %@", window);
             if ([window.rootViewController isKindOfClass:[self.coveredRootViewController class]]) {
                 appWindow = window;
-				self.coveredRootViewController = nil;
                 break;
             }
         }
@@ -237,6 +236,8 @@ NS_ASSUME_NONNULL_BEGIN
         weakself.screenshotViewController = nil;
         weakself.lockWindow.rootViewController = nil;
         weakself.lockWindow = nil;
+		
+		self.coveredRootViewController = nil;
 
         // Tell ourselves we are done.
         [[NSNotificationCenter defaultCenter] postNotificationName:SDLLockScreenManagerDidDismissLockScreenViewController object:nil];
