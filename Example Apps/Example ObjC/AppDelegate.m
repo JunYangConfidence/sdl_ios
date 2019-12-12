@@ -7,6 +7,9 @@
 #import "ProxyManager.h"
 #import "SDLLogMacros.h"
 #import "SDLManager.h"
+#import "ConnectionIAPTableViewController.h"
+#import "PasswordViewController.h"
+#import "PopupViewController.h"
 
 
 @interface AppDelegate ()
@@ -16,9 +19,30 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    return YES;
+	// Password window
+	self.passwordWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+	self.passwordWindow.rootViewController = [PasswordViewController new];
+	[self.passwordWindow makeKeyAndVisible];
+
+	// Popup window
+	self.popupWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+	self.popupWindow.rootViewController = [PopupViewController new];
+	[self.popupWindow makeKeyAndVisible];
+
+	// Network connection window
+	UIStoryboard *iapControllerStoryboard = [UIStoryboard storyboardWithName:@"ConnectionIAPTableViewController" bundle:[NSBundle mainBundle]];
+	ConnectionIAPTableViewController *iapController = [iapControllerStoryboard instantiateInitialViewController];
+	self.networkConnectionWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	self.networkConnectionWindow.backgroundColor = UIColor.greenColor;
+	self.networkConnectionWindow.rootViewController = iapController;
+
+	self.window = self.networkConnectionWindow;
+	[self.window makeKeyAndVisible];
+
+	[ProxyManager.sharedManager startWithProxyTransportType:ProxyTransportTypeIAP];
+
+	return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

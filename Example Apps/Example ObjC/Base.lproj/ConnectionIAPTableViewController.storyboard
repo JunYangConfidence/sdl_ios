@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="J12-ul-Tx1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="J12-ul-Tx1">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -41,6 +41,27 @@
                                                 <constraint firstAttribute="bottom" secondItem="rjq-vZ-OjB" secondAttribute="bottom" id="FKB-JG-o5G"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="rjq-vZ-OjB" secondAttribute="trailing" id="ISQ-6b-S34"/>
                                                 <constraint firstItem="rjq-vZ-OjB" firstAttribute="leading" secondItem="EhZ-2E-WQ5" secondAttribute="leadingMargin" id="PiJ-h3-NOR"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Mx9-1E-Df2">
+                                        <rect key="frame" x="0.0" y="54" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mx9-1E-Df2" id="aKL-ab-vrF">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dhF-ce-EKB">
+                                                    <rect key="frame" x="150" y="7" width="75" height="30"/>
+                                                    <state key="normal" title="Show Alert"/>
+                                                    <connections>
+                                                        <action selector="showAlert:" destination="J12-ul-Tx1" eventType="touchUpInside" id="bN1-Ol-u2i"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="dhF-ce-EKB" firstAttribute="centerX" secondItem="aKL-ab-vrF" secondAttribute="centerX" id="Jaw-St-ydT"/>
+                                                <constraint firstItem="dhF-ce-EKB" firstAttribute="centerY" secondItem="aKL-ab-vrF" secondAttribute="centerY" id="W8z-oz-qLD"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>

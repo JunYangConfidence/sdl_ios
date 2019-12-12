@@ -3,9 +3,8 @@
 //  SmartDeviceLink-iOS
 
 #import "ConnectionIAPTableViewController.h"
-
 #import "ProxyManager.h"
-
+#import "SmartDeviceLink.h"
 
 @interface ConnectionIAPTableViewController ()
 
@@ -95,5 +94,29 @@
     }
 }
 
+- (IBAction)showAlert:(id)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"title" message:@"mesaage." preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *act1 = [UIAlertAction actionWithTitle:@"001" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+    }];
+    [alert addAction:act1];
+
+	int count = 1;
+	for (UIWindow *window in [UIApplication sharedApplication].windows) {
+		SDLLogE(@"\n%d:\n\t\trootviewController: %@\n\t\twindow: %@", count, window.rootViewController, window.self);
+		count += 1;
+	}
+
+	for (UIWindow *window in [UIApplication sharedApplication].windows) {
+		if (window.isKeyWindow) {
+			UIViewController *topViewController = window.rootViewController;
+			if (topViewController == nil) {
+				return;
+			}
+			[topViewController presentViewController:alert animated:YES completion:nil];
+			break;
+		}
+	}
+}
 
 @end
